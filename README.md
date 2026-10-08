@@ -1,5 +1,7 @@
 # Documentação Técnica — E-commerce Frontend
 
+O backoffice inicial de cadastro e edição de produtos está em `/backoffice/produtos`. Veja [configuração, recursos e limitações](docs/BACKOFFICE.md).
+
 ## Visão Geral
 
 O **Newbyte E-commerce Frontend** é a aplicação web responsável pela experiência de compra da plataforma Newbyte.  

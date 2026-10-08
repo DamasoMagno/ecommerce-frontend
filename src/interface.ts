@@ -12,6 +12,7 @@ interface ICoupon {
 }
 
 export interface IProduct {
+  categoryId?: string | null
   id: string
   slug: string
   name: string
@@ -35,12 +36,16 @@ export interface IAddress {
 }
 
 export interface IOrder {
+  status?: import('@/modules/orders/schemas/order').OrderStatus
+  createdAt?: string
+  paidAt?: string | null
   id: string
   total: number
   payment: 'Pix' | 'Card' | 'Money'
   delivery: 'Retirada' | 'Entrega'
   address: IAddress
   orderItems: {
+    total?: number
     id: string
     quantity: number
     product: IProduct

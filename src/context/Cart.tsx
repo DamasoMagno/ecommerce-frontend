@@ -8,7 +8,6 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { useUser } from '@clerk/nextjs'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 
@@ -45,10 +44,9 @@ interface CartProviderProps {
 }
 
 export function CartProvider({ children }: CartProviderProps) {
-  const { user } = useUser()
   const { push } = useRouter()
 
-  const { address } = useUserInfo()
+  const { address, user } = useUserInfo()
   const userEmail = user?.primaryEmailAddress?.emailAddress ?? ''
 
   const [orderItems, setOrderItems] = useState<IOrderItem[]>([])
@@ -71,17 +69,12 @@ export function CartProvider({ children }: CartProviderProps) {
       return
     }
 
-    if (product.coupon) {
-      product.price = formatDiscountPrice(
-        product.coupon.discount,
-        product.price,
-      )
-    }
+    const unitPrice = formatDiscountPrice(product.coupon?.discount, product.price)
 
     const newOrderItem = await createOrderItem({
       email: userEmail,
       slug: product.slug,
-      total: product.price,
+      total: unitPrice,
     })
 
     setOrderItems((state) => [...state, newOrderItem])
@@ -106,7 +99,7 @@ export function CartProvider({ children }: CartProviderProps) {
       return item.id === orderId
         ? {
           ...item,
-          total: Number(item.total) + productPriceFormatted,
+          total: Math.round((Number(item.total) + productPriceFormatted) * 100) / 100,
           quantity: item.quantity + 1,
         }
         : item
@@ -125,7 +118,7 @@ export function CartProvider({ children }: CartProviderProps) {
       return item.id === orderId
         ? {
           ...item,
-          total: Number(item.total) - productPriceFormatted,
+          total: Math.round((Number(item.total) - productPriceFormatted) * 100) / 100,
           quantity: item.quantity - 1,
         }
         : item
@@ -182,6 +175,7 @@ export function CartProvider({ children }: CartProviderProps) {
   }
 
   useEffect(() => {
+    if (!userEmail) { setOrderItems([]); return }
     const loadOrderItems = async () => {
       {
         try {

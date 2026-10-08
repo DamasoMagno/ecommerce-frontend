@@ -1,21 +1,8 @@
 import { Logo } from './logo'
 import { CartModal } from '../Cart'
 import { ProfileOptions } from '../ProfileOptions'
-import { SearchInput } from '../../components/Search'
+import { SearchInput } from '../Search'
 
 export function Header() {
-  return (
-    <header className="border-[#2A2A2A] border-b-2">
-      <div className="max-w-7xl mx-auto w-full flex items-center justify-between  p-4">
-        <Logo />
-
-        <SearchInput />
-
-        <div className="flex items-center gap-4">
-          <CartModal />
-          <ProfileOptions />
-        </div>
-      </div>
-    </header>
-  )
+  return <header className="border-b border-border bg-surface/90"><div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-4 md:gap-8 md:px-6"><Logo /><SearchInput /><div className="flex items-center gap-4"><ProfileOptions /><CartModal /></div></div></header>
 }

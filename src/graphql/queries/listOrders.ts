@@ -19,6 +19,10 @@ const orderQuery = gql`
     orders(where: { email: $email, orderItems_some: {} }) {
       id
       total
+      createdAt
+      payment
+      delivery
+      address { id street number zipCode neighborhood complement }
       orderItems {
         id
         quantity

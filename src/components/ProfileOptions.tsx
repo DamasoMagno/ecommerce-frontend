@@ -2,79 +2,24 @@
 import Link from 'next/link'
 import { useClerk } from '@clerk/clerk-react'
 import * as Popover from '@radix-ui/react-popover'
-import {
-  Box,
-  BadgeDollarSign,
-  User,
-  LogOut,
-  LogIn,
-  Loader2,
-} from 'lucide-react'
+import { CircleUserRound, Package, LogOut, LogIn, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useUserInfo } from '@/context/User'
 
-export function ProfileOptions() {
-  const { signOut } = useClerk()
+function ProfileMenu({ onSignOut }: { onSignOut: () => void | Promise<void> }) {
   const { user, userLoaded } = useUserInfo()
+  return <Popover.Root><Popover.Trigger asChild><button aria-label="Minha conta" className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface text-accent transition hover:border-accent/40 hover:bg-accent-soft"><CircleUserRound size={20} strokeWidth={1.6} /></button></Popover.Trigger><Popover.Portal><Popover.Content align="end" sideOffset={12} className="z-[60] w-64 rounded-2xl border border-border bg-surface p-2 shadow-xl">
+    {!userLoaded ? <div className="flex justify-center p-5"><Loader2 className="animate-spin text-slate-500" size={20} /></div> : <><div className="border-b border-border px-3 py-3"><p className="text-sm font-bold text-slate-800">{user ? `Olá, ${user.firstName ?? 'cliente'}` : 'Bem-vindo à loja'}</p><p className="mt-1 text-xs text-slate-500">{user ? 'Acompanhe suas compras por aqui.' : 'Entre para acessar seus pedidos.'}</p></div><Popover.Close asChild><Link href={user ? '/orders' : '/sign'} className="mt-2 flex items-center gap-3 rounded-lg px-3 py-3 text-sm text-slate-700 hover:bg-accent-soft">{user ? <><Package size={17} />Meus pedidos</> : <><LogIn size={17} />Entrar na conta</>}</Link></Popover.Close>{user && <Popover.Close asChild><button onClick={onSignOut} className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm text-slate-500 hover:bg-accent-soft"><LogOut size={17} />Sair da conta</button></Popover.Close>}</>}
+  </Popover.Content></Popover.Portal></Popover.Root>
+}
+
+function ClerkProfileOptions() {
+  const { signOut } = useClerk()
   const router = useRouter()
+  return <ProfileMenu onSignOut={() => signOut(() => router.push('/'))} />
+}
 
-  async function handleLogout() {
-    await signOut(() => router.push('/'))
-  }
-
-  return (
-    <Popover.Root>
-      <Popover.Trigger asChild>
-        <button className="bg-transparent flex justify-center items-center text-white border-[#2A2A2A] border-2 rounded-lg w-9 h-9">
-          <User className="text-white" size={14} />
-        </button>
-      </Popover.Trigger>
-
-      <Popover.Portal>
-        <Popover.Content className="rounded-lg w-[260px] bg-[#1A1A1A] z-[9999999]">
-          {!userLoaded ? (
-            <div className="flex justify-center items-center min-h-[5rem]">
-              <Loader2 className="animate-spin" size={20} color="#FFF" />
-            </div>
-          ) : (
-            <>
-              <div className="flex flex-col gap-6 p-6">
-                <Link
-                  href="/orders"
-                  className="flex items-center gap-2 text-white bold"
-                >
-                  <Box size={20} /> Pedidos
-                </Link>
-                <Link
-                  href="/dealer"
-                  className="flex items-center gap-2 text-white bold"
-                >
-                  <BadgeDollarSign size={20} /> Solicitar revenda
-                </Link>
-              </div>
-
-              <footer className="px-6 py-4 border-t-[1px] border-[#2A2A2A]">
-                {user ? (
-                  <button
-                    className="flex items-center gap-2 bold text-[#FF4646]"
-                    onClick={handleLogout}
-                  >
-                    <LogOut size={20} /> Sair da conta
-                  </button>
-                ) : (
-                  <button
-                    className="flex items-center gap-2 bold text-[#5033C3]"
-                    onClick={() => router.push('/sign')}
-                  >
-                    <LogIn size={20} /> Fazer login
-                  </button>
-                )}
-              </footer>
-            </>
-          )}
-          <Popover.Arrow className="fill-[#1A1A1A]" />
-        </Popover.Content>
-      </Popover.Portal>
-    </Popover.Root>
-  )
+export function ProfileOptions() {
+  const { mockSession } = useUserInfo()
+  return mockSession ? <ProfileMenu onSignOut={mockSession.signOut} /> : <ClerkProfileOptions />
 }

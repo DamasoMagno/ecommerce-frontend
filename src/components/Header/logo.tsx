@@ -18,15 +18,14 @@ export async function Logo() {
       }
     `)
 
-    const logoImage = enterpriseInfos[0].logo.url
-    return logoImage
+    return { url: enterpriseInfos[0].logo.url, name: enterpriseInfos[0].name ?? 'Newbyte' }
   }
 
   const logo = await getLogo()
 
   return (
-    <Link href="/">
-      <Image src={logo} alt="" width={100} height={0} className="h-auto" />
+    <Link href="/" className="shrink-0 overflow-hidden rounded-full border border-border" aria-label="Voltar à página inicial">
+      <Image src={logo.url} alt={logo.name} width={56} height={56} className="h-12 w-12 rounded-full object-cover" />
     </Link>
   )
 }

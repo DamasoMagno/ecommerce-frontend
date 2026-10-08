@@ -28,9 +28,9 @@ export function ProductList() {
   return (
     <main className="px-4 pb-4 max-w-7xl mx-auto flex flex-col">
       {isLoading ? (
-        <div className="animate-pulse bg-white/10 h-8 rounded-lg w-3/12 my-8" />
+        <div className="animate-pulse bg-surface/10 h-8 rounded-lg w-3/12 my-8" />
       ) : (
-        <strong className="text-white text-lg my-8">
+        <strong className="text-slate-800 text-lg my-8">
           Busca por: {params.name}
         </strong>
       )}
@@ -46,7 +46,7 @@ export function ProductList() {
           ))}
         </section>
       ) : (
-        <div className="text-white flex justify-center items-center h-52">
+        <div className="text-slate-800 flex justify-center items-center h-52">
           Nenhum produto encontrado
         </div>
       )}

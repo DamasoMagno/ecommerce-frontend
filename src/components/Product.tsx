@@ -21,7 +21,7 @@ export function Product({ product, className, ...props }: ProductProps) {
   return (
     <Link
       href={`/product/${product.slug}`}
-      className={twMerge('flex flex-col min-w-[150px] relative', className)}
+      className={twMerge('group flex flex-col min-w-[180px] relative rounded-2xl border border-border bg-surface p-3 transition hover:border-border hover:shadow-md', className)}
       {...props}
     >
       {product.coupon && (
@@ -31,27 +31,27 @@ export function Product({ product, className, ...props }: ProductProps) {
         />
       )}
 
-      <div className="bg-[#1A1A1A] rounded-md flex justify-center items-center min-h-[160px] max-h-[160px] h-full relative">
+      <div className="bg-shell rounded-md flex justify-center items-center min-h-[160px] max-h-[160px] h-full relative">
         <Image
           src={product.image.url}
           width={0}
           height={0}
           sizes="100vw"
           alt=""
-          className="w-full max-h-[70%] max-w-[70%] object-contain"
+          className="w-full max-h-[70%] max-w-[70%] object-contain transition group-hover:scale-105"
         />
       </div>
 
       <div className="mt-1">
-        <span className="text-white text-xs md:text-sm">{product.name}</span>
+        <span className="text-slate-800 text-xs md:text-sm line-clamp-2 min-h-10">{product.name}</span>
 
-        <div className="mt-1 flex flex-col  text-white gap-1">
+        <div className="mt-1 flex flex-col  text-slate-800 gap-1">
           <strong className="text-lg">
             {formatPrice(productPriceFormatted)}
           </strong>
 
           {product.coupon && (
-            <small className="text-[#676767] line-through text-xs">
+            <small className="text-muted-ink line-through text-xs">
               {formatPrice(product.price)}
             </small>
           )}

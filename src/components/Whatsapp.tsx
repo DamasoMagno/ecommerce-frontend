@@ -1,8 +1,10 @@
 import Image from 'next/image'
 import { client } from '@/lib/graphql'
 import { gql } from 'graphql-request'
+import { isBackofficeMockEnabled } from '@/lib/backoffice/mock-mode'
 
 export async function Whatsapp() {
+  if (isBackofficeMockEnabled()) return null
   const { enterpriseInfos } = await client.request<{ enterpriseInfos: any }>(
     gql`
       query WhatsappContact {

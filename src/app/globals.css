@@ -6,3 +6,27 @@
   opacity: 0.7;
   cursor: not-allowed;
 }
+
+:root {
+  color-scheme: light;
+  /* Bridamo light palette, with softer surfaces for the storefront. */
+  --color-shell: 236 239 245;
+  --color-surface: 246 247 251;
+  --color-ink: 15 23 42;
+  --color-muted-ink: 86 100 120;
+  --color-border: 211 219 231;
+  --color-accent: 58 86 232;
+  --color-accent-soft: 227 233 253;
+}
+body { color: rgb(var(--color-ink)); background: rgb(var(--color-shell)); }
+h1, h2, h3 { font-family: var(--font-heading), sans-serif; }
+::selection { background: rgb(var(--color-accent-soft)); color: rgb(var(--color-ink)); }
+input, select, textarea { color-scheme: light; }
+:focus-visible { outline: 2px solid rgb(var(--color-accent)); outline-offset: 3px; }
+@keyframes sheet-enter { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes overlay-enter { from { opacity: 0; } to { opacity: 1; } }
+.cart-sheet[data-state='open'] { animation: sheet-enter 240ms ease-out; }
+.cart-overlay[data-state='open'] { animation: overlay-enter 180ms ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  .cart-sheet[data-state='open'], .cart-overlay[data-state='open'] { animation: none; }
+}

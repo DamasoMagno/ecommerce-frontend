@@ -16,9 +16,10 @@ import { registerAddress } from '@/graphql/mutations/registerAddress'
 
 import { IAddress } from '@/interface'
 
-import { AddressInput } from '../app/cart/components/FormAddress'
+import { AddressInput } from '@/modules/checkout/components/address-form'
 
 interface UserContextProps {
+  mockSession?: { signIn: () => void; signOut: () => void }
   address: IAddress | null
   user: any
   userLoaded: boolean

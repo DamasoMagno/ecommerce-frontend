@@ -11,7 +11,7 @@ export function Discount({ discount, className, ...props }: DiscountProps) {
     <div
       {...props}
       className={twMerge(
-        'z-10 flex items-center gap-1 bg-[#5033C3] text-white text-xs font-bold rounded-2xl px-2 py-1',
+        'z-10 flex items-center gap-1 bg-[#E4DEEE] text-[#5F4C82] text-xs font-bold rounded-2xl px-2 py-1',
         className,
       )}
     >

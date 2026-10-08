@@ -12,6 +12,10 @@ import { Code } from '../components/code'
 import { SendOrderToWhatsapp } from '../components/send-order-to-whatsapp'
 import { Order } from '../components/order'
 import { client } from '@/lib/graphql'
+import Link from 'next/link'
+import { isLocalMockAuthenticationEnabled, isStorefrontMockEnabled } from '@/lib/backoffice/mock-mode'
+import { mockCustomer } from '@/mocks/customer'
+import { getMockCommerce } from '@/mocks/commerce'
 
 interface Props {
   params: {
@@ -20,8 +24,9 @@ interface Props {
 }
 
 export default async function Payment({ params }: Props) {
-  const { userId } = auth()
-  const order = await listOrderDetails({
+  const demo = isStorefrontMockEnabled()
+  const { userId } = isLocalMockAuthenticationEnabled() ? { userId: mockCustomer.id } : auth()
+  const order = demo ? getMockCommerce().orders().find((item) => item.id === params.orderId && item.userId === userId) : await listOrderDetails({
     orderId: params.orderId,
     userId: String(userId),
   })
@@ -29,6 +34,14 @@ export default async function Payment({ params }: Props) {
   if (!order) {
     return redirect('/')
   }
+
+  if (demo) return <><Header /><main className="mx-auto my-10 max-w-xl space-y-5 rounded-xl border border-border bg-surface p-8 text-slate-800">
+    <p className="text-sm text-amber-800">Pedido fictício · nenhum pagamento será cobrado</p><h1 className="text-2xl font-bold">Pedido de teste recebido</h1>
+    <p>Total: {formatPrice(Number(order.total))}</p><p>Pagamento: {order.payment} · {order.delivery}</p>
+    <ul className="space-y-3">{order.orderItems.map((item) => <li key={item.id}>{item.quantity} × {item.product.name}</li>)}</ul>
+    <p className="text-sm text-slate-500">{order.address.street}, {order.address.number} · {order.address.neighborhood}</p>
+    <div className="flex gap-5 text-accent"><Link href="/orders">Meus pedidos</Link><Link href="/">Voltar à loja</Link></div>
+  </main></>
 
   const { enterpriseInfos } = await client.request<{
     enterpriseInfos: { pix: string }[]
@@ -40,7 +53,7 @@ export default async function Payment({ params }: Props) {
     }
   `)
 
-  async function generateDynamicPix() {
+  const generateDynamicPix = async () => {
     const qrCodePix = QrCodePix({
       version: '01',
       city: 'Itapipoca',
@@ -65,7 +78,7 @@ export default async function Payment({ params }: Props) {
     <>
       <Header />
 
-      <main className="flex flex-col items-center max-w-md w-[90%] mx-auto my-4 bg-[#1A1A1A]/40 px-6 py-12 rounded-md max-h-[85vh] overflow-y-scroll [&::-webkit-scrollbar]:hidden">
+      <main className="flex flex-col items-center max-w-md w-[90%] mx-auto my-4 bg-shell/40 px-6 py-12 rounded-md max-h-[85vh] overflow-y-scroll [&::-webkit-scrollbar]:hidden">
         <div className="w-full p-4 flex flex-col items-center gap-4 relative">
           {order.payment === 'Pix' ? (
             <>
@@ -95,7 +108,7 @@ export default async function Payment({ params }: Props) {
         </div>
 
         <div className="mt-8 w-full flex flex-col">
-          <span className="p-4 rounded-lg font-bold border-2 border-[#5033C3] text-white flex justify-between">
+          <span className="p-4 rounded-lg font-bold border-2 border-[#5033C3] text-slate-800 flex justify-between">
             <strong>Total:</strong>
             {formatPrice(Number(order.total))}
           </span>
@@ -106,34 +119,34 @@ export default async function Payment({ params }: Props) {
             ))}
           </ul>
 
-          <div className="h-[1px] w-full bg-[#1A1A1A]/100 my-4 rounded-xl" />
+          <div className="h-[1px] w-full bg-shell/100 my-4 rounded-xl" />
 
           <ul className="flex flex-col gap-2">
-            <li className="rounded-lg text-sm text-white flex justify-between p-4 border-[#2A2A2A] border-2">
+            <li className="rounded-lg text-sm text-slate-800 flex justify-between p-4 border-border border-2">
               <span>Pagamento:</span>
               <span>{order.payment}</span>
             </li>
-            <li className="rounded-lg text-sm text-white flex justify-between p-4 border-[#2A2A2A] border-2">
+            <li className="rounded-lg text-sm text-slate-800 flex justify-between p-4 border-border border-2">
               <span>Receber:</span>
               <span>{order.delivery}</span>
             </li>
-            <li className="rounded-lg text-sm text-white flex justify-between p-4 border-[#2A2A2A] border-2">
+            <li className="rounded-lg text-sm text-slate-800 flex justify-between p-4 border-border border-2">
               <span>Rua</span>
               <span>{order.address.street}</span>
             </li>
-            <li className="rounded-lg text-sm text-white flex justify-between p-4 border-[#2A2A2A] border-2">
+            <li className="rounded-lg text-sm text-slate-800 flex justify-between p-4 border-border border-2">
               <span>Número</span>
               <span>{order.address.number}</span>
             </li>
-            <li className="rounded-lg text-sm text-white flex justify-between p-4 border-[#2A2A2A] border-2">
+            <li className="rounded-lg text-sm text-slate-800 flex justify-between p-4 border-border border-2">
               <span>Bairro</span>
               <span>{order.address.neighborhood}</span>
             </li>
-            <li className="rounded-lg text-sm text-white flex justify-between p-4 border-[#2A2A2A] border-2">
+            <li className="rounded-lg text-sm text-slate-800 flex justify-between p-4 border-border border-2">
               <span>CEP</span>
               <span>{order.address.zipCode}</span>
             </li>
-            <li className="rounded-lg text-sm text-white flex justify-between p-4 border-[#2A2A2A] border-2">
+            <li className="rounded-lg text-sm text-slate-800 flex justify-between p-4 border-border border-2">
               <span>Complemento</span>
               <span>{order.address.complement}</span>
             </li>

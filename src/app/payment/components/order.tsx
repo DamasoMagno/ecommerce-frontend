@@ -7,7 +7,7 @@ interface OrderProps {
 
 export function Order({ order }: OrderProps) {
   return (
-    <li className="rounded-lg text-sm text-white flex justify-between p-4 border-[#2A2A2A] border-2">
+    <li className="rounded-lg text-sm text-slate-800 flex justify-between p-4 border-border border-2">
       <strong className="flex gap-2">
         <span>{order.quantity}x</span>
         {order.product.name}

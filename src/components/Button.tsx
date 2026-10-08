@@ -18,7 +18,7 @@ export function Button({
   return (
     <button
       className={twMerge(
-        'bg-[#5033C3] h-12 font-bold flex justify-center items-center gap-2 rounded-md text-white transition',
+        'bg-accent h-12 font-bold flex justify-center items-center gap-2 rounded-full text-[white] transition hover:bg-[#3048C8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500',
         className,
       )}
       disabled={disabled || loading}
